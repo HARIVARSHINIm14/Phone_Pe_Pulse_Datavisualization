@@ -246,7 +246,7 @@ if selected == "Explore Data":
   
         # Function to plot a bar chart
         def plot_bar_chart(df, x_column, y_column, title):
-            fig, ax = plt.subplots(figsize=(18, 8))
+            fig, ax = plt.subplots(figsize=(20,10))
             sns.barplot(x=x_column, y=y_column, data=df, ax=ax,palette='husl')
             ax.set_xlabel(x_column)
             ax.set_ylabel(y_column)
@@ -256,13 +256,12 @@ if selected == "Explore Data":
 
         # Function to plot a line chart
         def plot_line_chart(df, x_column, y_column, title):
-            fig, ax = plt.subplots(figsize=(10, 6))
+            fig, ax = plt.subplots(figsize=(20,10))
             sns.lineplot(x=x_column, y=y_column, data=df, ax=ax )
             ax.set_xlabel(x_column)
             ax.set_ylabel(y_column)
             ax.set_title(title)
-            ax.tick_params(axis='x', rotation=45)  # Removed ha='right'
-            plt.tight_layout()
+            ax.tick_params(axis='x', rotation=45)  
             st.pyplot(fig)
 
         # Ques1: Top Mobile Brands of Transaction Count (Bar Chart)
@@ -394,33 +393,33 @@ if selected == "Explore Data":
 
         # Streamlit UI
         st.set_option('deprecation.showPyplotGlobalUse', False)
-
-        ques= st.selectbox("Select the question",('Top Brands Of Mobiles Used','States With Lowest Transaction Amount',
-                                        'Districts With Highest Transaction Amount','Top 10 Districts With Lowest Transaction Amount',
-                                        'Top 10 States With AppOpens','Least 10 States With AppOpens','States With Lowest Transaction Count',
-                                        'States With Highest Transaction Count','States With Highest Transaction Amount',
-                                        'Top 50 Districts With Lowest Transaction Amount'))
+        st.caption("10 QUESTIONS:")
+        ques= st.selectbox("Select the question",('1.Top Brands Of Mobiles Used','2.States With Lowest Transaction Amount',
+                                        '3.Districts With Highest Transaction Amount','4.Top 10 Districts With Lowest Transaction Amount',
+                                        '5.Top 10 States With AppOpens','6.Least 10 States With AppOpens','7.States With Lowest Transaction Count',
+                                        '8.States With Highest Transaction Count','9.States With Highest Transaction Amount',
+                                        '10.Top 50 Districts With Lowest Transaction Amount'))
 
         # Call the respective function based on the selected question
-        if ques == 'Top Brands Of Mobiles Used':
+        if ques == '1.Top Brands Of Mobiles Used':
             ques1()
-        elif ques == 'States With Lowest Transaction Amount':
+        elif ques == '2.States With Lowest Transaction Amount':
             ques2()
-        elif ques == 'Districts With Highest Transaction Amount':
+        elif ques == '3.Districts With Highest Transaction Amount':
             ques3()
-        elif ques == 'Top 10 Districts With Lowest Transaction Amount':
+        elif ques == '4.Top 10 Districts With Lowest Transaction Amount':
             ques4()
-        elif ques == 'Top 10 States With AppOpens':
+        elif ques == '5.Top 10 States With AppOpens':
             ques5()
-        elif ques == 'Least 10 States With AppOpens':
+        elif ques == '6.Least 10 States With AppOpens':
             ques6()
-        elif ques == 'States With Lowest Transaction Count':
+        elif ques == '7.States With Lowest Transaction Count':
             ques7()
-        elif ques == 'States With Highest Transaction Count':
+        elif ques == '8.States With Highest Transaction Count':
             ques8()
-        elif ques == 'States With Highest Transaction Amount':
+        elif ques == '9.States With Highest Transaction Amount':
             ques9()
-        elif ques == 'Top 50 Districts With Lowest Transaction Amount':
+        elif ques == '10.Top 50 Districts With Lowest Transaction Amount':
             ques10()
 
 
@@ -509,7 +508,11 @@ if selected == "About":
     
     st.subheader('Click the button to Download Phone Pe')
 
-    url = "https://play.google.com/store/apps/details?id=com.phonepe.app&hl=en_IN&shortlink=2kk1w03o&c=consumer_app_icon&pid=PPWeb_app_download_page&af_xp=custom&source_caller=ui"
-    if st.button("➡️Go to URL"):
-          
-        webbrowser.open_new_tab(url)
+    colu1,colu2=st.columns(2)
+    with colu1:
+        url = "https://play.google.com/store/apps/details?id=com.phonepe.app&hl=en_IN&shortlink=2kk1w03o&c=consumer_app_icon&pid=PPWeb_app_download_page&af_xp=custom&source_caller=ui"
+        if st.button("➡️Go to URL"):
+            
+            webbrowser.open_new_tab(url)
+    with colu2:
+        st.image(r"C:\\Users\\hariv\\OneDrive\\Desktop\\Data Science\\Python\\Phone_Pe\\images\\Scan here .png")
