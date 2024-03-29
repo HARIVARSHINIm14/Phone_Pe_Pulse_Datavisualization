@@ -3,14 +3,13 @@ import pandas as pd
 import mysql.connector as sql
 import streamlit as st
 import plotly.express as px
-import os
-import json
 from streamlit_option_menu import option_menu
 from PIL import Image
 from git.repo.base import Repo
 import plotly.graph_objects as go
 import webbrowser
-
+import matplotlib.pyplot as plt
+import seaborn as sns
 # Setting up page configuration
 st.set_page_config(page_title= "Phonepe Pulse Data Visualization | By Harivarshini M",
                    layout= "wide",
@@ -244,8 +243,189 @@ if selected == "Explore Data":
                 if return_click:
                     fig.update_traces(hole=0.3)
                     chart.plotly_chart(fig)
+  
+        # Function to plot a bar chart
+        def plot_bar_chart(df, x_column, y_column, title):
+            fig, ax = plt.subplots(figsize=(18, 8))
+            sns.barplot(x=x_column, y=y_column, data=df, ax=ax,palette='husl')
+            ax.set_xlabel(x_column)
+            ax.set_ylabel(y_column)
+            ax.set_title(title)
+            ax.tick_params(axis='x', rotation=45)  
+            st.pyplot(fig)
 
-     
+        # Function to plot a line chart
+        def plot_line_chart(df, x_column, y_column, title):
+            fig, ax = plt.subplots(figsize=(10, 6))
+            sns.lineplot(x=x_column, y=y_column, data=df, ax=ax )
+            ax.set_xlabel(x_column)
+            ax.set_ylabel(y_column)
+            ax.set_title(title)
+            ax.tick_params(axis='x', rotation=45)  # Removed ha='right'
+            plt.tight_layout()
+            st.pyplot(fig)
+
+        # Ques1: Top Mobile Brands of Transaction Count (Bar Chart)
+        def ques1():
+            sql_query = """
+                SELECT Brand_name, SUM(Count) AS Total_Count
+                FROM agg_user
+                GROUP BY Brand_name
+                ORDER BY Total_Count DESC;
+                """
+            mycursor.execute(sql_query)
+            df = pd.DataFrame(mycursor.fetchall(), columns=['Brand_name', 'Total_Count'])
+            plot_bar_chart(df, 'Brand_name', 'Total_Count', 'Top Mobile Brands of Transaction Count')
+
+        # Ques2: States With Lowest Transaction Amount (Bar Chart)
+        def ques2():
+            sql_query = """
+                SELECT State, SUM(Transaction_amount) AS Total_Amount
+                FROM agg_trans
+                GROUP BY State
+                ORDER BY Total_Amount ASC
+                LIMIT 10;
+                """
+            mycursor.execute(sql_query)
+            df = pd.DataFrame(mycursor.fetchall(), columns=['State', 'Total_Amount'])
+            plot_bar_chart(df, 'State', 'Total_Amount', 'States With Lowest Transaction Amount')
+
+        # Ques3: Districts With Highest Transaction Amount (Line Chart)
+        def ques3():
+            sql_query = """
+                SELECT District, SUM(Amount) AS Total_Amount
+                FROM map_trans
+                GROUP BY District
+                ORDER BY Total_Amount DESC
+                LIMIT 10;
+                """
+            mycursor.execute(sql_query)
+            df = pd.DataFrame(mycursor.fetchall(), columns=['District', 'Total_Amount'])
+            plot_line_chart(df, 'District', 'Total_Amount', 'Districts With Highest Transaction Amount')
+
+        # Ques4: Top 10 Districts With Lowest Transaction Amount (Bar Chart)
+        def ques4():
+            sql_query = """
+                SELECT District, SUM(Amount) AS Total_Amount
+                FROM map_trans
+                GROUP BY District
+                ORDER BY Total_Amount ASC
+                LIMIT 10;
+                """
+            mycursor.execute(sql_query)
+            df = pd.DataFrame(mycursor.fetchall(), columns=['District', 'Total_Amount'])
+            plot_bar_chart(df, 'District', 'Total_Amount', 'Top 10 Districts With Lowest Transaction Amount')
+
+        # Ques5: Top 10 States With App Opens (Line Chart)
+        def ques5():
+            sql_query = """
+                SELECT State, SUM(Appopens) AS Total_Appopens
+                FROM map_user
+                GROUP BY State
+                ORDER BY Total_Appopens DESC
+                LIMIT 10;
+                """
+            mycursor.execute(sql_query)
+            df = pd.DataFrame(mycursor.fetchall(), columns=['State', 'Total_Appopens'])
+            plot_line_chart(df, 'State', 'Total_Appopens', 'Top 10 States With App Opens')
+
+        # Ques6: Least 10 States With App Opens (Line Chart)
+        def ques6():
+            sql_query = """
+                SELECT State, SUM(AppOpens) AS Total_AppOpens
+                FROM map_user
+                GROUP BY State
+                ORDER BY Total_AppOpens ASC
+                LIMIT 10;
+                """
+            mycursor.execute(sql_query)
+            df = pd.DataFrame(mycursor.fetchall(), columns=['State', 'Total_AppOpens'])
+            plot_line_chart(df, 'State', 'Total_AppOpens', 'Least 10 States With App Opens')
+
+        # Ques7: States With Lowest Transaction Count (Bar Chart)
+        def ques7():
+            sql_query = """
+                SELECT State, SUM(Transaction_count) AS Total_Transaction_count
+                FROM agg_trans
+                GROUP BY State
+                ORDER BY Total_Transaction_count ASC;
+                """
+            mycursor.execute(sql_query)
+            df = pd.DataFrame(mycursor.fetchall(), columns=['State', 'Total_Transaction_count'])
+            plot_bar_chart(df, 'State', 'Total_Transaction_count', 'States With Lowest Transaction Count')
+
+        # Ques8: States With Highest Transaction Count (Bar Chart)
+        def ques8():
+            sql_query = """
+                SELECT State, SUM(Transaction_count) AS Total_Transaction_count
+                FROM agg_trans
+                GROUP BY State
+                ORDER BY Total_Transaction_count DESC;
+                """
+            mycursor.execute(sql_query)
+            df = pd.DataFrame(mycursor.fetchall(), columns=['State', 'Total_Transaction_count'])
+            plot_bar_chart(df, 'State', 'Total_Transaction_count', 'States With Highest Transaction Count')
+
+        # Ques9: States With Highest Transaction Amount (Line Chart)
+        def ques9():
+            sql_query = """
+                SELECT State, SUM(Transaction_amount) AS Total_Amount
+                FROM agg_trans
+                GROUP BY State
+                ORDER BY Total_Amount DESC
+                LIMIT 10;
+                """
+            mycursor.execute(sql_query)
+            df = pd.DataFrame(mycursor.fetchall(), columns=['State', 'Total_Amount'])
+            plot_line_chart(df, 'State', 'Total_Amount', 'States With Highest Transaction Amount')
+
+        # Ques10: Top 50 Districts With Lowest Transaction Amount (Pie Chart)
+        def ques10():
+            sql_query = """
+                SELECT District, SUM(Amount) AS Total_Amount
+                FROM map_trans
+                GROUP BY District
+                ORDER BY Total_Amount ASC
+                LIMIT 50;
+                """
+            mycursor.execute(sql_query)
+            df = pd.DataFrame(mycursor.fetchall(), columns=['District', 'Total_Amount'])
+            plot_bar_chart(df, 'District','Total_Amount', 'Top 50 Districts With Lowest Transaction Amount')
+
+        # Streamlit UI
+        st.set_option('deprecation.showPyplotGlobalUse', False)
+
+        ques= st.selectbox("Select the question",('Top Brands Of Mobiles Used','States With Lowest Transaction Amount',
+                                        'Districts With Highest Transaction Amount','Top 10 Districts With Lowest Transaction Amount',
+                                        'Top 10 States With AppOpens','Least 10 States With AppOpens','States With Lowest Transaction Count',
+                                        'States With Highest Transaction Count','States With Highest Transaction Amount',
+                                        'Top 50 Districts With Lowest Transaction Amount'))
+
+        # Call the respective function based on the selected question
+        if ques == 'Top Brands Of Mobiles Used':
+            ques1()
+        elif ques == 'States With Lowest Transaction Amount':
+            ques2()
+        elif ques == 'Districts With Highest Transaction Amount':
+            ques3()
+        elif ques == 'Top 10 Districts With Lowest Transaction Amount':
+            ques4()
+        elif ques == 'Top 10 States With AppOpens':
+            ques5()
+        elif ques == 'Least 10 States With AppOpens':
+            ques6()
+        elif ques == 'States With Lowest Transaction Count':
+            ques7()
+        elif ques == 'States With Highest Transaction Count':
+            ques8()
+        elif ques == 'States With Highest Transaction Amount':
+            ques9()
+        elif ques == 'Top 50 Districts With Lowest Transaction Amount':
+            ques10()
+
+
+        
+
 # BAR CHART TRANSACTIONS - DISTRICT WISE DATA            
         st.markdown("# ")
         st.markdown("# ")
